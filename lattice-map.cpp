@@ -3,6 +3,12 @@
 #include "util/common-utils.h"
 #include "lat/kaldi-lattice.h"
 
+template<typename T1, typename T2>
+void replace_lat( kaldi::Input &ki, string &line,
+                  T1 &lattice_reader,
+                  T2 &lattice_writer);
+
+
 int main(int argc, char *argv[]) {
     using namespace kaldi;
     using namespace std;
@@ -32,43 +38,40 @@ int main(int argc, char *argv[]) {
             lats_rspecifier = po.GetArg(2),
             lats_wspecifier = po.GetArg(3);
 
-
+    bool binary;
+    Input ki(utt_scp_rspecifier, &binary);
+    KALDI_ASSERT(!binary);
+    std::string line;
     if (write_compact){
         RandomAccessCompactLatticeReader lattice_reader(lats_rspecifier);
         CompactLatticeWriter lattice_writer(lats_wspecifier);
 
-        bool binary;
-        Input ki(utt_scp_rspecifier, &binary);
-        KALDI_ASSERT(!binary);
-        std::string line;
-        while (std::getline(ki.Stream(), line)) {
-            std::vector<std::string> split_line;
-            SplitStringToVector(line, " \t\r", true, &split_line);
-            if (split_line.empty()) {
-                KALDI_ERR << "Unable to parse line \"" << line << "\" encountered in input in " << utt_scp_rspecifier;
-            }
-            lattice_writer.Write(split_line[0], lattice_reader.Value(split_line[1]));
-        }
+
+        replace_lat( ki, line, lattice_reader, lattice_writer);
 
     } else{
         RandomAccessLatticeReader lattice_reader(lats_rspecifier);
         LatticeWriter lattice_writer(lats_wspecifier);
 
-        bool binary;
-        Input ki(utt_scp_rspecifier, &binary);
-        KALDI_ASSERT(!binary);
-        std::string line;
-        while (std::getline(ki.Stream(), line)) {
-            std::vector<std::string> split_line;
-            SplitStringToVector(line, " \t\r", true, &split_line);
-            if (split_line.empty()) {
-                KALDI_ERR << "Unable to parse line \"" << line << "\" encountered in input in " << utt_scp_rspecifier;
-            }
-            lattice_writer.Write(split_line[0], lattice_reader.Value(split_line[1]));
-        }
+
+        replace_lat( ki, line, lattice_reader, lattice_writer);
     }
 
 
 
+}
+
+template<typename T1, typename T2>
+void replace_lat( kaldi::Input &ki, string &line,
+                 T1 &lattice_reader,
+                 T2 &lattice_writer) {
+    while (std::getline(ki.Stream(), line)) {
+        std::__1::vector<std::string> split_line;
+        kaldi::SplitStringToVector(line, " \t\r", true, &split_line);
+        if (split_line.empty()) {
+            KALDI_ERR << "Unable to parse line \"" << line << "\" encountered in input in utt_scp_rspecifier";
+        }
+        lattice_writer.Write(split_line[0], lattice_reader.Value(split_line[1]));
+    }
 }
 
