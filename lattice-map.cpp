@@ -14,7 +14,9 @@ int main(int argc, char *argv[]) {
 
     const char *usage =
             "Copy fake lattices \n"
-            "Usage: lattice-map [options] utt-scp-rspecifier  in-lattice-rspecifier lattice-wspecifier\n";
+            "Usage: lattice-map [options] utt-scp-rspecifier  in-lattice-rspecifier lattice-wspecifier\n"
+            "e.g.: ./lattice_replace train_fbank_combine_fake/utt.map 'ark: gunzip -c chain/exp/chain/chain_data_all_ori_align_lat/lat.*.gz |' "
+            "  'ark,t:chain/exp/chain/chain_data_all_ori_align_lat/text_fake.lats'";
 
     ParseOptions po(usage);
     bool write_compact = true;
