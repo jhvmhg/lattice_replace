@@ -3,8 +3,6 @@
 #include "util/common-utils.h"
 #include "lat/kaldi-lattice.h"
 
-
-
 int main(int argc, char *argv[]) {
     using namespace kaldi;
     using namespace std;
@@ -33,7 +31,6 @@ int main(int argc, char *argv[]) {
             lats_wspecifier = po.GetArg(3);
 
 
-//    SequentialLatticeReader lattice_reader(lats_rspecifier);
     if (write_compact){
         RandomAccessCompactLatticeReader lattice_reader(lats_rspecifier);
         CompactLatticeWriter lattice_writer(lats_wspecifier);
@@ -71,33 +68,5 @@ int main(int argc, char *argv[]) {
 
 
 
-    int32 num_total = 0;
-    size_t num_success = 0;
-
-    // 将原始的lat读入并存进map中，方便后面查询使用
-//    map<int, VectorFst<>> mapLattice;
-
-//    for (; !lattice_reader.Done(); lattice_reader.Next(), num_total++) {
-//
-//        auto a = lattice_reader.Value();
-//        a.Copy();
-//
-//            lattice_writer.Write(lattice_reader.Key(), lattice_reader.Value());
-//            num_success++;
-//
-//    }
-
-    //根据所需的列表查询原始lat，并生成写出
-
-
-
-//    for (; !utt_map_reader.Done(); utt_map_reader.Next()) {
-//        cout << utt_map_reader.Key() << "\t" << utt_map_reader.Value().Duration()<< endl;
-//        auto a = utt_map_reader.Value();
-//        a.SampFreq();
-//
-//    }
-
-
-
 }
+
