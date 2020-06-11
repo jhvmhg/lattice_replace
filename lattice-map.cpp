@@ -2,16 +2,17 @@
 #include "base/kaldi-common.h"
 #include "util/common-utils.h"
 #include "lat/kaldi-lattice.h"
+using namespace kaldi;
+using namespace std;
 
 template<typename T1, typename T2>
-void replace_lat( kaldi::Input &ki, string &line,
+void replace_lat( kaldi::Input &ki, string &line, bool ignore_lack,
                   T1 &lattice_reader,
                   T2 &lattice_writer);
 
 
 int main(int argc, char *argv[]) {
-    using namespace kaldi;
-    using namespace std;
+
     typedef kaldi::int32 int32;
     typedef kaldi::int64 int64;
     using fst::SymbolTable;
@@ -26,7 +27,10 @@ int main(int argc, char *argv[]) {
 
     ParseOptions po(usage);
     bool write_compact = true;
+    bool ignore_lack = true;
     po.Register("write-compact", &write_compact, "If true, write in normal (compact) form.");
+    po.Register("ignore-lack", &ignore_lack, "If true, When in-lattice no such utt's lattice , "
+                                                        " just warn and skip it.");
 
     po.Read(argc, argv);
 
@@ -47,14 +51,15 @@ int main(int argc, char *argv[]) {
         CompactLatticeWriter lattice_writer(lats_wspecifier);
 
 
-        replace_lat( ki, line, lattice_reader, lattice_writer);
+        replace_lat( ki, line, ignore_lack, lattice_reader, lattice_writer);
 
     } else{
         RandomAccessLatticeReader lattice_reader(lats_rspecifier);
         LatticeWriter lattice_writer(lats_wspecifier);
 
 
-        replace_lat( ki, line, lattice_reader, lattice_writer);
+        replace_lat( ki, line, ignore_lack, lattice_reader, lattice_writer);
+
     }
 
 
@@ -62,16 +67,21 @@ int main(int argc, char *argv[]) {
 }
 
 template<typename T1, typename T2>
-void replace_lat( kaldi::Input &ki, string &line,
+void replace_lat( kaldi::Input &ki, string &line, bool ignore_lack,
                  T1 &lattice_reader,
                  T2 &lattice_writer) {
     while (std::getline(ki.Stream(), line)) {
-        std::__1::vector<std::string> split_line;
-        kaldi::SplitStringToVector(line, " \t\r", true, &split_line);
+        vector<string> split_line;
+        SplitStringToVector(line, " \t\r", true, &split_line);
         if (split_line.empty()) {
             KALDI_ERR << "Unable to parse line \"" << line << "\" encountered in input in utt_scp_rspecifier";
         }
-        lattice_writer.Write(split_line[0], lattice_reader.Value(split_line[1]));
+        if (lattice_reader.HasKey(split_line[1])){
+            lattice_writer.Write(split_line[0], lattice_reader.Value(split_line[1]));
+        } else{
+            if (ignore_lack) KALDI_WARN << "No such key: " << split_line[1];
+            else KALDI_ERR << "No such key: " << split_line[1];
+        }
     }
 }
 
