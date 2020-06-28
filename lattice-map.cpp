@@ -1,7 +1,9 @@
 #include <iostream>
+#include <map>
 #include "base/kaldi-common.h"
 #include "util/common-utils.h"
 #include "lat/kaldi-lattice.h"
+
 using namespace kaldi;
 using namespace std;
 
