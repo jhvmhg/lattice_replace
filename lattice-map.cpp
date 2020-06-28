@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     using fst::StdArc;
 
     const char *usage =
-            "Copy fake lattices ,utt-scp-rspecifier format is 'new_utt  original_utt'\n"
+            "Copy fake lattices, utt-scp-rspecifier format is 'new_utt\toriginal_utt'\n"
             "Usage: lattice-map [options] utt-scp-rspecifier in-lattice-rspecifier lattice-wspecifier\n"
             "e.g.: ./lattice_replace train_fbank_combine_fake/utt.map 'ark: gunzip -c chain/exp/chain/chain_data_all_ori_align_lat/lat.*.gz |' "
             "  'ark,t:chain/exp/chain/chain_data_all_ori_align_lat/text_fake.lats'";
@@ -71,10 +71,7 @@ int main(int argc, char *argv[]) {
             replace_lat_with_utt_scp(ki, ignore_lack,lattice_reader, lattice_writer);
         }
 
-
     } else{
-
-
 
         if ( write_from_lattice_in){
             SequentialLatticeReader lattice_reader(lats_rspecifier);
@@ -89,31 +86,29 @@ int main(int argc, char *argv[]) {
     }
 
 
-
 }
 
 
 template<typename T1, typename T2>
 void replace_lat_with_lattice_in(Input &ki, bool ignore_lack, T1 &lattice_reader, T2 &lattice_writer) {
     string line;
-    map<string, string> mapUtt;
+    map<string, string> map_utt;
     while (std::getline(ki.Stream(), line)) {
         vector<string> split_line;
         SplitStringToVector(line, " \t\r", true, &split_line);
-        mapUtt.insert(pair<string, string>(split_line[1], split_line[0]));
+        map_utt.insert(pair<string, string>(split_line[1], split_line[0]));
     }
-    string new_utt;
+
     for (; !lattice_reader.Done(); lattice_reader.Next()){
-        map<string, string>::iterator iter = mapUtt.find(lattice_reader.Key());
-        if (iter != mapUtt.end()){
+        string new_utt;
+        map<string, string>::iterator iter = map_utt.find(lattice_reader.Key());
+        if (iter != map_utt.end()){
             new_utt = iter->second;
             lattice_writer.Write(new_utt, lattice_reader.Value());
         } else{
             KALDI_WARN << "no such utt in utt_scp_rspecifier";
         }
-
     }
-
 
 }
 
