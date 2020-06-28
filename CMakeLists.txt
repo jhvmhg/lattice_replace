@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 project(lattice_replace)
 
 set(CMAKE_CXX_STANDARD 14)
-set(KALDI_PATH /Users/meichaoyang/CLionProjects/kaldi_wakeup)
+set(KALDI_PATH $ENV{KALDI_PATH})
 
 include_directories(
         ${KALDI_PATH}/src
