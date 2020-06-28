@@ -41,7 +41,8 @@ int main(int argc, char *argv[]) {
     bool ignore_lack = true;
     bool write_from_lattice_in = false;
     po.Register("write-compact", &write_compact, "If true, write in normal (compact) form.");
-    po.Register("utt-from-in-lattice", &write_from_lattice_in, "If true, write in normal (compact) form.");
+    po.Register("utt-from-in-lattice", &write_from_lattice_in, "If true, sequential read from in-lattice-rspecifier, "
+                                                               "else sequential read from utt-scp-rspecifier.");
     po.Register("ignore-lack", &ignore_lack, "If true, When in-lattice no such utt's lattice , "
                                                         " just warn and skip it.");
 
