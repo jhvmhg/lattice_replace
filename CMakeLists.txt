@@ -10,7 +10,10 @@ include_directories(
         )
 
 
-add_executable(lattice_replace lattice-map.cpp)
+add_executable(lattice_replace
+#        lattice-map.cpp
+        decode_grammar.cpp
+        )
 
 target_link_libraries(lattice_replace
         ${KALDI_PATH}/src/lib/libkaldi-online2${CMAKE_SHARED_LIBRARY_SUFFIX}
@@ -31,6 +34,6 @@ target_link_libraries(lattice_replace
         ${KALDI_PATH}/src/lib/libkaldi-matrix${CMAKE_SHARED_LIBRARY_SUFFIX}
         ${KALDI_PATH}/src/lib/libkaldi-base${CMAKE_SHARED_LIBRARY_SUFFIX}
         ${KALDI_PATH}/tools/openfst/lib/libfst${CMAKE_SHARED_LIBRARY_SUFFIX}
-        ${EXT_LIB}
-        /usr/lib/x86_64-linux-gnu/libpthread${CMAKE_SHARED_LIBRARY_SUFFIX}
+#        ${EXT_LIB}
+#        /usr/lib/x86_64-linux-gnu/libpthread${CMAKE_SHARED_LIBRARY_SUFFIX}
         )
