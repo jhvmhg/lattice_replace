@@ -3,6 +3,7 @@ project(lattice_replace)
 
 set(CMAKE_CXX_STANDARD 14)
 set(KALDI_PATH $ENV{KALDI_PATH})
+set(KALDI_PATH /Users/meichaoyang/CLionProjects/kaldi_new)
 
 include_directories(
         ${KALDI_PATH}/src

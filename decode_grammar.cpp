@@ -159,13 +159,13 @@ int main(int argc, char *argv[]) {
         pairs.push_back(std::pair<int32, std::shared_ptr<const ConstFst<StdArc> > >(
                 nonterminal, this_fst));
 
-        fst::GrammarFst* grammar_fst = new fst::GrammarFst(nonterm_phones_offset,
+        fst::ConstGrammarFst *grammar_fst = new GrammarFstTpl<const ConstFst<StdArc> >(nonterm_phones_offset,
                                                            top_fst,
                                                            pairs);
         timer.Reset();
 
         {
-            LatticeFasterDecoderTpl<fst::GrammarFst> decoder(*grammar_fst, config);
+            LatticeFasterDecoderTpl<fst::ConstGrammarFst> decoder(*grammar_fst, config);
 
             for (; !feature_reader.Done(); feature_reader.Next()) {
                 std::string utt = feature_reader.Key();
